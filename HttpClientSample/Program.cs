@@ -88,7 +88,7 @@ namespace HttpClientSample
         static async Task RunAsync()
         {
             // Update port # in the following line.
-            client.BaseAddress = new Uri("http://localhost:5960/");
+            client.BaseAddress = new Uri("http://localhost/");
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
@@ -102,11 +102,29 @@ namespace HttpClientSample
                     Price = 100,
                     Category = "Widgets"
                 };
-                for (int i = 0; i < 500; i++)
-                {
-                    var tempUrl = await CreateProductAsync(product);
-                    Console.WriteLine($"Created at {tempUrl}");
-                }
+
+                Parallel.For(0, 500, async i =>
+                 {
+                     Product tempProduct = new Product
+                     {
+                         Name = $"Gizmo{i}",
+                         Price = 100,
+                         Category = "Widgets"
+                     };
+                     var tempUrl = await CreateProductAsync(tempProduct);
+                     Console.WriteLine($"Created at {tempUrl}, {tempProduct.Name}");
+                 });
+                //for (int i = 0; i < 5000; i++)
+                //{
+                //    Product tempProduct = new Product
+                //    {
+                //        Name = $"Gizmo{i}",
+                //        Price = 100,
+                //        Category = "Widgets"
+                //    };
+                //    var tempUrl = await CreateProductAsync(tempProduct);
+                //    Console.WriteLine($"Created at {tempUrl}");
+                //}
 
                 List<Product> products = await GetProductsAsync("Giz");
                 foreach (var pro in products)

@@ -6,9 +6,14 @@ namespace Products.API.Entities
     {
         public ProductsDbContext(DbContextOptions<ProductsDbContext> options) : base(options)
         {
-            Database.Migrate();
-
+           // Database.Migrate();
         }
-        public DbSet<Product> Products { get; set; }
+
+        public virtual DbSet<Product> Products { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Product>()
+                .HasIndex(b => b.Name);
+        }
     }
 }

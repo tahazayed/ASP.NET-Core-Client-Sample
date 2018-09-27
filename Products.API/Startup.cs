@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
@@ -22,9 +23,13 @@ namespace Products.API
             services.AddMvc()
                 .AddMvcOptions(o => o.OutputFormatters.Add(
                     new XmlDataContractSerializerOutputFormatter()));
+            var hostname = Environment.GetEnvironmentVariable("SQLSERVER_HOST") ?? "localhost";
+            var password = Environment.GetEnvironmentVariable("SQLSERVER_SA_PASSWORD") ?? "dodido_2008";
+            var database = Environment.GetEnvironmentVariable("SQLSERVER_DATABASE") ?? "ProductsDB";
 
-            var connectionString = configuration["ConnectionStrings:DefaultConnection"];
-            services.AddDbContext<ProductsDbContext>(o => o.UseSqlServer(connectionString));
+            var connectionString = $"Server={hostname};Database={database};user id=sa;pwd={password};MultipleActiveResultSets=true;Max Pool Size=100;Timeout=90;";//configuration["ConnectionStrings:DefaultConnection"];
+
+            services.AddDbContext<ProductsDbContext>(o =>o.UseSqlServer(connectionString),ServiceLifetime.Scoped);
 
         }
 

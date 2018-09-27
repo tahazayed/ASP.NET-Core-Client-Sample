@@ -10,7 +10,7 @@ docker pull microsoft/mssql-server-linux:2017-latest
 
 REM run SQL with name sql1 and store data on windows https://stackoverflow.com/questions/42203488/settings-to-windows-firewall-to-allow-docker-for-windows-to-share-drive/43904051#43904051
 
-docker run -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=dodido_2008' -p 1433:1433 -v C:/work/docker/sql1/db:/var/opt/mssql --name sql1 --hostname sql1 -d microsoft/mssql-server-linux:2017-latest
+docker run --rm -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=dodido_2008' -p 1433:1433 -v C:/work/docker/sql1/db:/var/opt/mssql --name sql1 --hostname sql1 -d microsoft/mssql-server-linux:2017-latest
 
 REM list proccesses
 
@@ -31,4 +31,13 @@ REM autostart
 docker update --restart unless-stopped sql1
 
 
+MOFCOMP %SYSTEMROOT%\System32\WindowsVirtualization.V2.mof
 
+REM https://docs.docker.com/engine/examples/dotnetcore/#create-a-dockerfile-for-an-aspnet-core-application
+
+REM https://ghost.kontena.io/dot-net-core-and-sql-server-in-docker/
+cd C:\tfs\Products.API\Products.API
+
+docker build -t productsapi .
+
+docker run -d --rm -p 80:80 --link sql1 -e SQLSERVER_HOST=sql1 --name myapp productsapi

@@ -23,11 +23,11 @@ namespace Products.API
             services.AddMvc()
                 .AddMvcOptions(o => o.OutputFormatters.Add(
                     new XmlDataContractSerializerOutputFormatter()));
-            var hostname = Environment.GetEnvironmentVariable("SQLSERVER_HOST") ?? "localhost";
+            var hostname = Environment.GetEnvironmentVariable("SQLSERVER_HOST") ?? "172.17.85.61";
             var password = Environment.GetEnvironmentVariable("SQLSERVER_SA_PASSWORD") ?? "dodido_2008";
             var database = Environment.GetEnvironmentVariable("SQLSERVER_DATABASE") ?? "ProductsDB";
 
-            var connectionString = $"Server={hostname};Database={database};user id=sa;pwd={password};MultipleActiveResultSets=true;Max Pool Size=100;Timeout=90;";//configuration["ConnectionStrings:DefaultConnection"];
+            var connectionString = $"Server={hostname};Database={database};user id=sa;pwd={password};MultipleActiveResultSets=true;Max Pool Size=10000;Timeout=90;";//configuration["ConnectionStrings:DefaultConnection"];
 
             services.AddDbContext<ProductsDbContext>(o =>o.UseSqlServer(connectionString),ServiceLifetime.Scoped);
 

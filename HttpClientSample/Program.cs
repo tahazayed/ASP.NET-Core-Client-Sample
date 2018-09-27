@@ -88,7 +88,7 @@ namespace HttpClientSample
         static async Task RunAsync()
         {
             // Update port # in the following line.
-            client.BaseAddress = new Uri("http://localhost/");
+            client.BaseAddress = new Uri("http://172.17.85.61/");
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
@@ -103,7 +103,7 @@ namespace HttpClientSample
                     Category = "Widgets"
                 };
 
-                Parallel.For(0, 500, async i =>
+                Parallel.For(0, 50000, async i =>
                  {
                      Product tempProduct = new Product
                      {

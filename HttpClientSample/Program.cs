@@ -93,6 +93,7 @@ namespace HttpClientSample
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
+            client.Timeout = TimeSpan.FromMinutes(30);
 
             try
             {
@@ -103,12 +104,12 @@ namespace HttpClientSample
                     Price = 100,
                     Category = "Widgets"
                 };
-                var timeout = 99999999; // 10 seconds
+             
                 using (var cts = new CancellationTokenSource())
                 {
                     using (var t = new Timer(_ => cts.Cancel(), null, System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite))
                     {
-                        Parallel.For(0, 50000,
+                        Parallel.For(0, 500000,
                             new ParallelOptions() {MaxDegreeOfParallelism = 50, CancellationToken = cts.Token},
                             async i =>
                             {

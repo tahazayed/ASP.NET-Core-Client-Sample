@@ -109,8 +109,13 @@ namespace HttpClientSample
                 {
                     using (var t = new Timer(_ => cts.Cancel(), null, System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite))
                     {
-                        Parallel.For(0, 500000,
-                            new ParallelOptions() {MaxDegreeOfParallelism = 100, CancellationToken = cts.Token},
+                        var options = new ParallelOptions
+                        {
+                            MaxDegreeOfParallelism = Environment.ProcessorCount,
+                            CancellationToken = cts.Token
+                        };
+
+                        Parallel.For(0, 500000, options,
                             async i =>
                             {
                                 Product tempProduct = new Product

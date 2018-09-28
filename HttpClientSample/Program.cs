@@ -89,7 +89,7 @@ namespace HttpClientSample
         static async Task RunAsync()
         {
             // Update port # in the following line.
-            client.BaseAddress = new Uri("http://172.17.85.61/");
+            client.BaseAddress = new Uri("http://172.17.85.61:8080/");
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
@@ -110,7 +110,7 @@ namespace HttpClientSample
                     using (var t = new Timer(_ => cts.Cancel(), null, System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite))
                     {
                         Parallel.For(0, 500000,
-                            new ParallelOptions() {MaxDegreeOfParallelism = 50, CancellationToken = cts.Token},
+                            new ParallelOptions() {MaxDegreeOfParallelism = 100, CancellationToken = cts.Token},
                             async i =>
                             {
                                 Product tempProduct = new Product

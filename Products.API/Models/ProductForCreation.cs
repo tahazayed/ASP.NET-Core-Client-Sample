@@ -9,6 +9,8 @@ namespace Products.API.Models
         public string Name { get; set; }
 
         public decimal Price { get; set; }
+
+        [MaxLength(100)]
         public string Category { get; set; }
     }
 }

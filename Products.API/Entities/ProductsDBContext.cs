@@ -6,7 +6,7 @@ namespace Products.API.Entities
     {
         public ProductsDbContext(DbContextOptions<ProductsDbContext> options) : base(options)
         {
-            Database.Migrate();
+            //Database.Migrate();
         }
 
         public virtual DbSet<Product> Products { get; set; }

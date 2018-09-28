@@ -6,6 +6,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Net.Http.Formatting;
 using System.Text;
+using System.Threading;
 
 
 namespace HttpClientSample
@@ -102,18 +103,34 @@ namespace HttpClientSample
                     Price = 100,
                     Category = "Widgets"
                 };
+                var timeout = 99999999; // 10 seconds
+                using (var cts = new CancellationTokenSource())
+                {
+                    using (var t = new Timer(_ => cts.Cancel(), null, System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite))
+                    {
+                        Parallel.For(0, 50000,
+                            new ParallelOptions() {MaxDegreeOfParallelism = 50, CancellationToken = cts.Token},
+                            async i =>
+                            {
+                                Product tempProduct = new Product
+                                {
+                                    Name = $"Gizmo{i}",
+                                    Price = 100,
+                                    Category = "Widgets"
+                                };
+                                try
+                                {
+                                    var tempUrl = await CreateProductAsync(tempProduct);
 
-                Parallel.For(0, 50000, async i =>
-                 {
-                     Product tempProduct = new Product
-                     {
-                         Name = $"Gizmo{i}",
-                         Price = 100,
-                         Category = "Widgets"
-                     };
-                     var tempUrl = await CreateProductAsync(tempProduct);
-                     Console.WriteLine($"Created at {tempUrl}, {tempProduct.Name}");
-                 });
+                                    Console.WriteLine($"Created at {tempUrl}, {tempProduct.Name}");
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine($"Exception at {tempProduct.Name}, {ex.Message}");
+                                }
+                            });
+                    }
+                }
                 //for (int i = 0; i < 5000; i++)
                 //{
                 //    Product tempProduct = new Product
@@ -126,13 +143,13 @@ namespace HttpClientSample
                 //    Console.WriteLine($"Created at {tempUrl}");
                 //}
 
-                List<Product> products = await GetProductsAsync("Giz");
-                foreach (var pro in products)
-                {
-                    // Delete the product
-                    var tempStatusCode = await DeleteProductAsync(pro.Id);
-                    Console.WriteLine($"Deleted (HTTP Status = {(int)tempStatusCode})");
-                }
+                //List<Product> products = await GetProductsAsync("Giz");
+                //foreach (var pro in products)
+                //{
+                //    // Delete the product
+                //    var tempStatusCode = await DeleteProductAsync(pro.Id);
+                //    Console.WriteLine($"Deleted {pro.Id} (HTTP Status = {(int)tempStatusCode})");
+                //}
 
                 var url = await CreateProductAsync(product);
                 Console.WriteLine($"Created at {url}");

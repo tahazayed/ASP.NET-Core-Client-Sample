@@ -27,7 +27,7 @@ namespace Products.API
             var password = Environment.GetEnvironmentVariable("SQLSERVER_SA_PASSWORD") ?? "dodido_2008";
             var database = Environment.GetEnvironmentVariable("SQLSERVER_DATABASE") ?? "ProductsDB";
 
-            var connectionString = $"Server={hostname};Database={database};user id=sa;pwd={password};MultipleActiveResultSets=true;Min Pool Size=100;Max Pool Size=1000;Timeout=90;";//configuration["ConnectionStrings:DefaultConnection"];
+            var connectionString = $"Server={hostname};Database={database};user id=sa;pwd={password};MultipleActiveResultSets=true;Min Pool Size=100;Max Pool Size=2000;Timeout=90;Connection Lifetime=900;";//configuration["ConnectionStrings:DefaultConnection"];
 
             services.AddDbContext<ProductsDbContext>(o =>o.UseSqlServer(connectionString),ServiceLifetime.Scoped);
 

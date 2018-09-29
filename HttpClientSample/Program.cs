@@ -89,7 +89,7 @@ namespace HttpClientSample
         static async Task RunAsync()
         {
             // Update port # in the following line.
-            client.BaseAddress = new Uri("http://172.17.85.61:8080/");
+            client.BaseAddress = new Uri("http://172.17.85.61/");
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
@@ -111,7 +111,7 @@ namespace HttpClientSample
                     {
                         var options = new ParallelOptions
                         {
-                            MaxDegreeOfParallelism = Environment.ProcessorCount,
+                            MaxDegreeOfParallelism = 1000,// Environment.ProcessorCount,
                             CancellationToken = cts.Token
                         };
 

@@ -98,8 +98,9 @@ namespace HttpClientSample
             client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
             client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip, deflate");
-            
-            //client.DefaultRequestHeaders.Add("Connection", "close");
+
+            client.DefaultRequestHeaders.ConnectionClose = false;
+           
             client.Timeout = TimeSpan.FromMinutes(30);
 
             try

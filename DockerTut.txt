@@ -10,7 +10,7 @@ docker pull microsoft/mssql-server-linux:2017-latest
 
 REM run SQL with name sql1 and store data on windows https://stackoverflow.com/questions/42203488/settings-to-windows-firewall-to-allow-docker-for-windows-to-share-drive/43904051#43904051
 
-docker run --rm -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=dodido_2008' -p 1433:1433 -v C:/work/docker/sql1/db:/var/opt/mssql --name sql1 --hostname sql1 -d microsoft/mssql-server-linux:2017-latest
+docker run --rm -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=dodido_2008' -e 'MSSQL_PID=Express' -p 1433:1433 -v C:/work/docker/sql1/db:/var/opt/mssql --name sql1 --hostname sql1 -d microsoft/mssql-server-linux:2017-latest
 
 REM list proccesses
 

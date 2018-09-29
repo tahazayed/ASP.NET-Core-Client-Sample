@@ -23,7 +23,7 @@ namespace HttpClientSample
     {
        static HttpClientHandler handler = new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip };
         
-        static HttpClient client = new HttpClient(handler);
+        static HttpClient client = new HttpClient(handler, false);
         // Create the JSON formatter.
         static MediaTypeFormatter jsonFormatter = new JsonMediaTypeFormatter();
 

@@ -115,7 +115,7 @@ namespace HttpClientSample
                             CancellationToken = cts.Token
                         };
 
-                        Parallel.For(0, 500000, options,
+                        Parallel.For(0, 50000, options,
                             async i =>
                             {
                                 Product tempProduct = new Product
@@ -149,13 +149,13 @@ namespace HttpClientSample
                 //    Console.WriteLine($"Created at {tempUrl}");
                 //}
 
-                //List<Product> products = await GetProductsAsync("Giz");
-                //foreach (var pro in products)
-                //{
-                //    // Delete the product
-                //    var tempStatusCode = await DeleteProductAsync(pro.Id);
-                //    Console.WriteLine($"Deleted {pro.Id} (HTTP Status = {(int)tempStatusCode})");
-                //}
+                List<Product> products = await GetProductsAsync("Giz");
+                foreach (var pro in products)
+                {
+                    // Delete the product
+                    var tempStatusCode = await DeleteProductAsync(pro.Id);
+                    Console.WriteLine($"Deleted {pro.Id} (HTTP Status = {(int)tempStatusCode})");
+                }
 
                 var url = await CreateProductAsync(product);
                 Console.WriteLine($"Created at {url}");

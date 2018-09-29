@@ -10,7 +10,7 @@ using Products.API.Models;
 
 namespace Products.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/products")]
     [ApiController]
     public class ProductsController : ControllerBase
     {
@@ -23,14 +23,14 @@ namespace Products.API.Controllers
 
         // GET: api/Products
         [HttpGet("{name}")]
-        public IActionResult GetProducts([FromRoute]string name = "")
+        public async Task<IActionResult> GetProducts([FromRoute]string name = "")
         {
             if (!string.IsNullOrEmpty(name))
             {
-                return Ok(_context.Products.Where(p => p.Name.Contains(name, StringComparison.InvariantCultureIgnoreCase)).ToList());
+                return Ok( _context.Products.Where(p => p.Name.Contains(name, StringComparison.InvariantCultureIgnoreCase)).ToListAsync().GetAwaiter().GetResult());
             }
 
-            return Ok(_context.Products.ToList());
+            return Ok(_context.Products.ToListAsync().GetAwaiter().GetResult());
         }
         //public IEnumerable<Product> GetProducts([FromRoute] string name="")
         //{
@@ -78,7 +78,7 @@ namespace Products.API.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ProductExists(id))
+                if (!ProductExists(id).GetAwaiter().GetResult())
                 {
                     return NotFound();
                 }
@@ -134,9 +134,9 @@ namespace Products.API.Controllers
             return Ok(product);
         }
 
-        private bool ProductExists(long id)
+        private async Task<bool> ProductExists(long id)
         {
-            return _context.Products.Any(e => e.Id == id);
+            return await _context.Products.AnyAsync(e => e.Id == id);
         }
     }
 }

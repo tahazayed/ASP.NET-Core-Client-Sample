@@ -41,3 +41,6 @@ cd C:\tfs\Products.API\Products.API
 docker build -t productsapi .
 
 docker run -d --rm -p 80:80 --link sql1 -e SQLSERVER_HOST=sql1 --name myapp productsapi
+
+
+https://linuxhint.com/install-minikube-ubuntu/

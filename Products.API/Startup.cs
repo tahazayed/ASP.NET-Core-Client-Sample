@@ -29,8 +29,8 @@ namespace Products.API
 
             var connectionString = $"Server={hostname};Database={database};user id=sa;pwd={password};MultipleActiveResultSets=true;Min Pool Size=100;Max Pool Size=2000;Timeout=90;Connection Lifetime=900;";//configuration["ConnectionStrings:DefaultConnection"];
 
-            services.AddDbContext<ProductsDbContext>(o =>o.UseSqlServer(connectionString),ServiceLifetime.Scoped);
-
+            // services.AddDbContext<ProductsDbContext>(o => o.UseSqlServer(connectionString),ServiceLifetime.Scoped);
+            services.AddDbContext<ProductsDbContext>(o => o.UseInMemoryDatabase("ProductsDB"), ServiceLifetime.Scoped);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -21,9 +21,13 @@ namespace HttpClientSample
 
     class Program
     {
-        static HttpClient client = new HttpClient();
+       static HttpClientHandler handler = new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip };
+        
+        static HttpClient client = new HttpClient(handler);
         // Create the JSON formatter.
         static MediaTypeFormatter jsonFormatter = new JsonMediaTypeFormatter();
+
+
 
         static void ShowProduct(Product product)
         {
@@ -93,6 +97,9 @@ namespace HttpClientSample
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip, deflate");
+            
+            //client.DefaultRequestHeaders.Add("Connection", "close");
             client.Timeout = TimeSpan.FromMinutes(30);
 
             try
@@ -104,14 +111,14 @@ namespace HttpClientSample
                     Price = 100,
                     Category = "Widgets"
                 };
-             
+
                 using (var cts = new CancellationTokenSource())
                 {
                     using (var t = new Timer(_ => cts.Cancel(), null, System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite))
                     {
                         var options = new ParallelOptions
                         {
-                            MaxDegreeOfParallelism = 1000,// Environment.ProcessorCount,
+                            MaxDegreeOfParallelism = Environment.ProcessorCount,
                             CancellationToken = cts.Token
                         };
 

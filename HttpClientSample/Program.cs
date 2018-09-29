@@ -105,14 +105,7 @@ namespace HttpClientSample
 
             try
             {
-                // Create a new product
-                Product product = new Product
-                {
-                    Name = "Gizmo",
-                    Price = 100,
-                    Category = "Widgets"
-                };
-
+                
                 using (var cts = new CancellationTokenSource())
                 {
                     using (var t = new Timer(_ => cts.Cancel(), null, System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite))
@@ -164,6 +157,14 @@ namespace HttpClientSample
                     var tempStatusCode = await DeleteProductAsync(pro.Id);
                     Console.WriteLine($"Deleted {pro.Id} (HTTP Status = {(int)tempStatusCode})");
                 }
+
+                // Create a new product
+                Product product = new Product
+                {
+                    Name = "Gizmo",
+                    Price = 100,
+                    Category = "Widgets"
+                };
 
                 var url = await CreateProductAsync(product);
                 Console.WriteLine($"Created at {url}");

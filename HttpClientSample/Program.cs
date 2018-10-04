@@ -18,34 +18,35 @@ namespace HttpClientSample
         public string Category { get; set; }
     }
 
-    class Program
+    internal class Program
     {
-       static readonly HttpClientHandler Handler = new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip };
-        
-        static readonly HttpClient Client = new HttpClient(Handler, false);
+        private static readonly HttpClientHandler Handler = new HttpClientHandler()
+        {
+            AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip
+        };
+        private static readonly HttpClient Client = new HttpClient(Handler, false);
+
         // Create the JSON formatter.
-        static readonly MediaTypeFormatter JsonFormatter = new JsonMediaTypeFormatter();
+        private static readonly MediaTypeFormatter JsonFormatter = new JsonMediaTypeFormatter();
 
-
-
-        static void ShowProduct(Product product)
+        private static void ShowProduct(Product product)
         {
             Console.WriteLine($"Name: {product.Name}\tPrice: " +
                 $"{product.Price}\tCategory: {product.Category}");
         }
 
-        static async Task<Uri> CreateProductAsync(Product product)
+        private static async Task<Uri> CreateProductAsync(Product product)
         {
-   
+
             HttpResponseMessage response = await Client.PostAsync(
-                "api/products", product, JsonFormatter, "application/json").ConfigureAwait(false); 
+                "api/products", product, JsonFormatter, "application/json").ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
 
             // return URI of the created resource.
             return response.Headers.Location;
         }
 
-        static async Task<Product> GetProductAsync(string path)
+        private static async Task<Product> GetProductAsync(string path)
         {
             Product product = null;
             HttpResponseMessage response = await Client.GetAsync(path);
@@ -55,10 +56,11 @@ namespace HttpClientSample
             }
             return product;
         }
-        static async Task<List<Product>> GetProductsAsync(string name)
+
+        private static async Task<List<Product>> GetProductsAsync(string name)
         {
             List<Product> products = null;
-           
+
             HttpResponseMessage response = await Client.GetAsync($"api/products/{name}");
             if (response.IsSuccessStatusCode)
             {
@@ -66,7 +68,8 @@ namespace HttpClientSample
             }
             return products;
         }
-        static async Task<Product> UpdateProductAsync(Product product)
+
+        private static async Task<Product> UpdateProductAsync(Product product)
         {
             HttpResponseMessage response = await Client.PutAsync(
                 $"api/products/{product.Id}", product, JsonFormatter, "application/json");
@@ -77,19 +80,19 @@ namespace HttpClientSample
             return product;
         }
 
-        static async Task<HttpStatusCode> DeleteProductAsync(string id)
+        private static async Task<HttpStatusCode> DeleteProductAsync(string id)
         {
             HttpResponseMessage response = await Client.DeleteAsync(
                 $"api/products/{id}");
             return response.StatusCode;
         }
 
-        static void Main()
+        private static void Main()
         {
             RunAsync().GetAwaiter().GetResult();
         }
 
-        static async Task RunAsync()
+        private static async Task RunAsync()
         {
             // Update port # in the following line.
             Client.BaseAddress = new Uri("http://localhost:5960/");
@@ -99,12 +102,12 @@ namespace HttpClientSample
             Client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip, deflate");
 
             Client.DefaultRequestHeaders.ConnectionClose = false;
-           
+
             Client.Timeout = TimeSpan.FromMinutes(30);
 
             try
             {
-                
+
                 using (var cts = new CancellationTokenSource())
                 {
                     using (new Timer(callback: _ => cts.Cancel(), state: null, dueTime: Timeout.Infinite, period: Timeout.Infinite))

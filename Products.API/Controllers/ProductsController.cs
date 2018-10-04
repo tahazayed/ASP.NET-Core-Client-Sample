@@ -90,7 +90,6 @@ namespace Products.API.Controllers
 
         // POST: api/Products
         [HttpPost]
-        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> PostProduct([FromBody] ProductForCreation productForCreation)
         {
             if (!ModelState.IsValid)

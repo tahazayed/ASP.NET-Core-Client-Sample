@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
 using System.Net.Http.Formatting;
-using System.Text;
+using System.Net.Http.Headers;
 using System.Threading;
+using System.Threading.Tasks;
 
 
 namespace HttpClientSample
@@ -21,11 +20,11 @@ namespace HttpClientSample
 
     class Program
     {
-       static HttpClientHandler handler = new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip };
+       static readonly HttpClientHandler Handler = new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip };
         
-        static HttpClient client = new HttpClient(handler, false);
+        static readonly HttpClient Client = new HttpClient(Handler, false);
         // Create the JSON formatter.
-        static MediaTypeFormatter jsonFormatter = new JsonMediaTypeFormatter();
+        static readonly MediaTypeFormatter JsonFormatter = new JsonMediaTypeFormatter();
 
 
 
@@ -38,8 +37,8 @@ namespace HttpClientSample
         static async Task<Uri> CreateProductAsync(Product product)
         {
    
-            HttpResponseMessage response = await client.PostAsync<Product>(
-                "api/products", product, jsonFormatter, "application/json").ConfigureAwait(false); 
+            HttpResponseMessage response = await Client.PostAsync<Product>(
+                "api/products", product, JsonFormatter, "application/json").ConfigureAwait(false); 
             response.EnsureSuccessStatusCode();
 
             // return URI of the created resource.
@@ -49,7 +48,7 @@ namespace HttpClientSample
         static async Task<Product> GetProductAsync(string path)
         {
             Product product = null;
-            HttpResponseMessage response = await client.GetAsync(path);
+            HttpResponseMessage response = await Client.GetAsync(path);
             if (response.IsSuccessStatusCode)
             {
                 product = await response.Content.ReadAsAsync<Product>();
@@ -60,7 +59,7 @@ namespace HttpClientSample
         {
             List<Product> products = null;
            
-            HttpResponseMessage response = await client.GetAsync($"api/products/{name}");
+            HttpResponseMessage response = await Client.GetAsync($"api/products/{name}");
             if (response.IsSuccessStatusCode)
             {
                 products = await response.Content.ReadAsAsync<List<Product>>();
@@ -69,8 +68,8 @@ namespace HttpClientSample
         }
         static async Task<Product> UpdateProductAsync(Product product)
         {
-            HttpResponseMessage response = await client.PutAsync<Product>(
-                $"api/products/{product.Id}", product, jsonFormatter, "application/json");
+            HttpResponseMessage response = await Client.PutAsync<Product>(
+                $"api/products/{product.Id}", product, JsonFormatter, "application/json");
             response.EnsureSuccessStatusCode();
 
             // Deserialize the updated product from the response body.
@@ -80,7 +79,7 @@ namespace HttpClientSample
 
         static async Task<HttpStatusCode> DeleteProductAsync(string id)
         {
-            HttpResponseMessage response = await client.DeleteAsync(
+            HttpResponseMessage response = await Client.DeleteAsync(
                 $"api/products/{id}");
             return response.StatusCode;
         }
@@ -93,22 +92,22 @@ namespace HttpClientSample
         static async Task RunAsync()
         {
             // Update port # in the following line.
-            client.BaseAddress = new Uri("http://172.17.85.61/");
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(
+            Client.BaseAddress = new Uri("http://tahalab.ddns.net:9000/");
+            Client.DefaultRequestHeaders.Accept.Clear();
+            Client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
-            client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip, deflate");
+            Client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip, deflate");
 
-            client.DefaultRequestHeaders.ConnectionClose = false;
+            Client.DefaultRequestHeaders.ConnectionClose = false;
            
-            client.Timeout = TimeSpan.FromMinutes(30);
+            Client.Timeout = TimeSpan.FromMinutes(30);
 
             try
             {
                 
                 using (var cts = new CancellationTokenSource())
                 {
-                    using (var t = new Timer(_ => cts.Cancel(), null, System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite))
+                    using (var t = new Timer(_ => cts.Cancel(), null, Timeout.Infinite, Timeout.Infinite))
                     {
                         var options = new ParallelOptions
                         {
@@ -116,7 +115,7 @@ namespace HttpClientSample
                             CancellationToken = cts.Token
                         };
 
-                        Parallel.For(0, 50000, options,
+                        Parallel.For(0, 50, options,
                             async i =>
                             {
                                 Product tempProduct = new Product

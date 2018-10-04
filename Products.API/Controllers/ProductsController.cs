@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Products.API.Entities;
@@ -27,15 +25,14 @@ namespace Products.API.Controllers
         {
             if (!string.IsNullOrEmpty(name))
             {
-                return Ok( _context.Products.Where(p => p.Name.Contains(name, StringComparison.InvariantCultureIgnoreCase)).ToListAsync().GetAwaiter().GetResult());
+                return Ok(await Task.Run(()=> _context.Products
+                    .Where(p => p.Name.Contains(name, StringComparison.InvariantCultureIgnoreCase))
+                    .ToListAsync().GetAwaiter().GetResult()));
             }
 
-            return Ok(_context.Products.ToListAsync().GetAwaiter().GetResult());
+            return Ok(await Task.Run(()=> _context.Products.ToListAsync().GetAwaiter().GetResult()));
         }
-        //public IEnumerable<Product> GetProducts([FromRoute] string name="")
-        //{
-        //    return _context.Products;
-        //}
+
 
         // GET: api/Products/5
         [HttpGet("{id:int}")]
@@ -93,6 +90,7 @@ namespace Products.API.Controllers
 
         // POST: api/Products
         [HttpPost]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> PostProduct([FromBody] ProductForCreation productForCreation)
         {
             if (!ModelState.IsValid)

@@ -37,7 +37,7 @@ namespace HttpClientSample
         static async Task<Uri> CreateProductAsync(Product product)
         {
    
-            HttpResponseMessage response = await Client.PostAsync<Product>(
+            HttpResponseMessage response = await Client.PostAsync(
                 "api/products", product, JsonFormatter, "application/json").ConfigureAwait(false); 
             response.EnsureSuccessStatusCode();
 
@@ -68,7 +68,7 @@ namespace HttpClientSample
         }
         static async Task<Product> UpdateProductAsync(Product product)
         {
-            HttpResponseMessage response = await Client.PutAsync<Product>(
+            HttpResponseMessage response = await Client.PutAsync(
                 $"api/products/{product.Id}", product, JsonFormatter, "application/json");
             response.EnsureSuccessStatusCode();
 
@@ -92,7 +92,7 @@ namespace HttpClientSample
         static async Task RunAsync()
         {
             // Update port # in the following line.
-            Client.BaseAddress = new Uri("http://tahalab.ddns.net:9000/");
+            Client.BaseAddress = new Uri("http://localhost:5960/");
             Client.DefaultRequestHeaders.Accept.Clear();
             Client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
@@ -107,7 +107,7 @@ namespace HttpClientSample
                 
                 using (var cts = new CancellationTokenSource())
                 {
-                    using (var t = new Timer(_ => cts.Cancel(), null, Timeout.Infinite, Timeout.Infinite))
+                    using (new Timer(callback: _ => cts.Cancel(), state: null, dueTime: Timeout.Infinite, period: Timeout.Infinite))
                     {
                         var options = new ParallelOptions
                         {

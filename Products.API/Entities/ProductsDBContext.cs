@@ -2,14 +2,14 @@
 
 namespace Products.API.Entities
 {
-    public class ProductsDbContext : DbContext
+    public  class ProductsDbContext : DbContext
     {
         public ProductsDbContext(DbContextOptions<ProductsDbContext> options) : base(options)
         {
-            Database.Migrate();
+            base.Database.Migrate();
         }
 
-        public virtual DbSet<Product> Products { get; set; }
+        public DbSet<Product> Products { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>()

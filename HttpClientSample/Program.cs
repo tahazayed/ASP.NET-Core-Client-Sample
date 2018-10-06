@@ -94,8 +94,10 @@ namespace HttpClientSample
 
         private static async Task RunAsync()
         {
+            var sp = ServicePointManager.FindServicePoint(new Uri("http://localhost:5962/"));
+            sp.ConnectionLeaseTimeout = 60 * 1000; // 1 minute
             // Update port # in the following line.
-            Client.BaseAddress = new Uri("http://localhost:5960/");
+            Client.BaseAddress = new Uri("http://localhost:5962/");
             Client.DefaultRequestHeaders.Accept.Clear();
             Client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
@@ -118,7 +120,7 @@ namespace HttpClientSample
                             CancellationToken = cts.Token
                         };
 
-                        Parallel.For(0, 50, options,
+                        Parallel.For(0, 500, options,
                             async i =>
                             {
                                 Product tempProduct = new Product
